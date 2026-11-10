@@ -1,0 +1,131 @@
+Metadata-Version: 2.4
+Name: atrees
+Version: 0.1.0
+Summary: Personal Life Operating System - Local-first AI-powered personal management
+Author-email: Abdulrahman <abdo@example.com>
+License-Expression: MIT
+Keywords: personal-assistant,life-os,productivity,ai,local-first
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Office/Business :: Scheduling
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.109.0
+Requires-Dist: uvicorn[standard]>=0.27.0
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: pydantic-settings>=2.1.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: sqlalchemy>=2.0.25
+Requires-Dist: alembic>=1.13.0
+Requires-Dist: aiosqlite>=0.19.0
+Requires-Dist: sqlite-utils>=3.37.0
+Requires-Dist: telethon>=1.34.0
+Requires-Dist: python-telegram-bot>=21.0
+Requires-Dist: google-auth>=2.25.0
+Requires-Dist: google-auth-oauthlib>=1.2.0
+Requires-Dist: google-auth-httplib2>=0.2.0
+Requires-Dist: google-api-python-client>=2.115.0
+Requires-Dist: ollama>=0.3.0
+Requires-Dist: httpx>=0.26.0
+Requires-Dist: groq>=0.6.0
+Requires-Dist: openai>=1.12.0
+Requires-Dist: apscheduler>=3.10.0
+Requires-Dist: cryptography>=41.0.0
+Requires-Dist: python-jose[cryptography]>=3.3.0
+Requires-Dist: passlib[bcrypt]>=1.7.4
+Requires-Dist: structlog>=24.1.0
+Requires-Dist: python-json-logger>=2.0.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: typer>=0.9.0
+Requires-Dist: pendulum>=3.0.0
+Requires-Dist: email-validator>=2.1.0
+Requires-Dist: python-multipart>=0.0.6
+Requires-Dist: pandas>=2.1.0
+Requires-Dist: openpyxl>=3.1.0
+Requires-Dist: greenlet>=3.5.6
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.12.0; extra == "dev"
+Requires-Dist: httpx>=0.26.0; extra == "dev"
+Requires-Dist: faker>=20.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.7.0; extra == "dev"
+Requires-Dist: pre-commit>=3.6.0; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=7.4.0; extra == "test"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "test"
+Requires-Dist: pytest-cov>=4.1.0; extra == "test"
+Requires-Dist: pytest-mock>=3.12.0; extra == "test"
+Requires-Dist: httpx>=0.26.0; extra == "test"
+Requires-Dist: faker>=20.0.0; extra == "test"
+Provides-Extra: docs
+Requires-Dist: mkdocs>=1.5.0; extra == "docs"
+Requires-Dist: mkdocs-material>=9.5.0; extra == "docs"
+Requires-Dist: mkdocstrings[python]>=0.24.0; extra == "docs"
+
+# ATREES — Personal Life OS
+
+ATREES is a local-first personal knowledge and productivity system. The current codebase is an early backend foundation: SQLite/SQLAlchemy models, FastAPI routes, task and notification services, and Telegram Bot API / MTProto connector implementations.
+
+> **Status:** Phase 1 is a foundation, not the finished Personal Life OS. The React frontend, AI conversation importers, WhatsApp importer, Google OAuth flows, evidence-backed research pipeline, and reliable production scheduler are not implemented yet.
+
+## Requirements
+
+- Python 3.11 or newer (Python 3.12 is the recommended baseline; test Python 3.13 against all pinned dependencies before using it in production).
+- `uv` package manager.
+- Arch Linux or another Linux distribution.
+- Optional: Ollama for local AI; Telegram account/bot credentials only when enabling those connectors.
+
+## Quick start (Arch Linux)
+
+```bash
+sudo pacman -S --needed python python-pip git
+curl -LsSf https://astral.sh/uv/install.sh | sh
+cd /path/to/ATREES
+uv sync --extra dev
+cp .env.example .env
+```
+
+Generate independent secrets and paste them into `.env`:
+
+```bash
+python - <<'PY'
+import base64, secrets
+print('ENCRYPTION_KEY=' + base64.b64encode(secrets.token_bytes(32)).decode())
+print('API_KEY=' + base64.b64encode(secrets.token_bytes(32)).decode())
+PY
+```
+
+Apply the versioned schema migrations, insert default preferences and run the API (fresh database):
+
+```bash
+uv run atrees-init
+uv run atrees serve --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000/api/health`. Private API endpoints require the `X-ATREES-API-Key` header. Keep `.env`, Telegram session files, OAuth tokens, and the SQLite database private.
+
+## Development checks
+
+```bash
+uv run pytest
+uv run python -m compileall -q src
+uv run ruff check src tests
+```
+
+## Existing architecture
+
+- `src/atrees/api`: FastAPI application and REST routes.
+- `src/atrees/models`: SQLAlchemy domain models.
+- `src/atrees/connectors`: Telegram Bot API and Telegram MTProto connectors.
+- `src/atrees/services`: task planning, sync, and notification services.
+- `src/atrees/core`: configuration, logging, errors, encryption, and security helpers.
+- `alembic/`: initial schema migration.
+- `docs/`: audit, schema, configuration, connectors, migration and security notes.
+
+See [Phase 1 status](docs/PHASE1_STATUS.md), [configuration](docs/CONFIGURATION.md), and [security](docs/SECURITY.md).

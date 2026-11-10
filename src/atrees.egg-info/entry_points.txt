@@ -1,0 +1,7 @@
+[console_scripts]
+atrees = atrees.cli:app
+atrees-backup = atrees.scripts.backup:main
+atrees-dev = atrees.scripts.dev_server:main
+atrees-init = atrees.scripts.init_db:main
+atrees-migrate = atrees.scripts.migrate:main
+atrees-restore = atrees.scripts.restore:main
